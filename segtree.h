@@ -23,7 +23,7 @@ class SegmentTree {
 
  public:
   SegmentTree(const std::vector<T>& data,
-      std::function<T(T, T)> f = std::plus<T>(),
+      std::function<T(T, T)> f     = std::plus <T>(),
       std::function<T(T, T)> f_inv = std::minus<T>()) {
     this -> f     = f;
     this -> f_inv = f_inv;
@@ -42,7 +42,7 @@ class SegmentTree {
   }
 
   SegmentTree(int n, T val = T(),
-      std::function<T(T, T)> f = std::plus<T>(),
+      std::function<T(T, T)> f     = std::plus <T>(),
       std::function<T(T, T)> f_inv = std::minus<T>()) :
         SegmentTree(std::vector<T>(n, val), f, f_inv) {
   }
