@@ -17,16 +17,31 @@ class SegmentTree {
  private:
   std::vector<T> tree;
   int levels;
+  int n;
   int el;
   std::function<T(T, T)> f;
-  std::function<T(T, T)> f_inv;
+
+  T query(int l, int r, int st, int fi) {
+    if (l == r)
+      return get(l);
+
+    int mid = (st + fi + 1) / 2;
+    if (r < mid) {
+      return query(l, r, st,  mid - 1);
+    } else if (l >= mid) {
+      return query(l, r, mid, fi);
+    } else {
+      T left  = query(l,   mid - 1, st,  mid - 1);
+      T right = query(mid, r,       mid, fi);
+      return f(left, right);
+    }
+  }
 
  public:
   SegmentTree(const std::vector<T>& data,
-      std::function<T(T, T)> f     = std::plus <T>(),
-      std::function<T(T, T)> f_inv = std::minus<T>()) {
-    this -> f     = f;
-    this -> f_inv = f_inv;
+      std::function<T(T, T)> f = std::plus <T>()) {
+    this->f = f;
+    this->n = data.size();
 
     // build tree
     levels = 1, el = 1;
@@ -42,33 +57,13 @@ class SegmentTree {
   }
 
   SegmentTree(int n, T val = T(),
-      std::function<T(T, T)> f     = std::plus <T>(),
-      std::function<T(T, T)> f_inv = std::minus<T>()) :
-        SegmentTree(std::vector<T>(n, val), f, f_inv) {
+      std::function<T(T, T)> f = std::plus <T>()) :
+        SegmentTree(std::vector<T>(n, val), f) {
   }
 
-  T query(int level, int r) {
-    assert(r >= 0 && level >= 0);
-    if (level == levels - 1)  // last level - only one element
-      return get(r);
-    int seg_size = el / (1 << level);    // size of segment on current level
-    int seg = r / seg_size;              // number of segment on this level
-    int seg_child = r / (seg_size / 2);  // number of segment on next level
-    int st  = seg_size * seg;            // start of the current segment
-    int mid = st + seg_size / 2;         // first value in the left subsegment
-    if (st + seg_size - 1 == r)
-      return tree[(1 << level) + seg - 1];
-    else if (r < mid)
-      return query(level + 1, r);
-    else
-      return f(tree[(2 << level) + seg_child - 2], query(level + 1, r));
-  }
 
   T get(int l, int r) {
-    if (l == 0)
-      return query(0, r);
-    else
-      return f_inv(query(0, r), query(0, l - 1));
+    return query(l, r, 0, n);
   }
 
   T get(int index) {
@@ -77,15 +72,11 @@ class SegmentTree {
 
   void set(int index, T value) {
     int i = el - 1 + index;
-    T prev_ch = tree[i], new_ch = value;
     tree[i] = value;
     do {
-      i = (i - 1) / 2;
-      T new_prev_ch = tree[i];
-      tree[i] = f(f_inv(tree[i], prev_ch), new_ch);
-      prev_ch = new_prev_ch;
-      new_ch = tree[i];
-    } while (i != 0);
+      i = (i-1) / 2;
+      tree[i] = f(tree[i*2 + 1], tree[i*2 + 2]);
+    } while (i > 0);
   }
 };
 

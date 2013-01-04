@@ -10,8 +10,7 @@
 int main() {
   const int n = 8;
   SegmentTree<int> segmentTree(n, 1,
-      std::multiplies<int>(),
-      std::divides<int>());
+      std::multiplies<int>());
   for (int i = 0; i < n; ++i)
     segmentTree.set(i, i + 1);
 
