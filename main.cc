@@ -5,6 +5,7 @@
 // Description : Usage example
 //============================================================================
 #include <cstdio>
+#include <fucntional>
 #include "segtree.h" // NOLINT
 
 int main() {
