@@ -1,11 +1,4 @@
-//============================================================================
-// Name        : segtree.h
-// Author      : Oleksandr
-// Copyright   : Licensed with GPL2
-// Description : Segment tree class in C++11
-//============================================================================
-
-#ifndef SEGTREE_H_ // NOLINT
+#ifndef SEGTREE_H_
 #define SEGTREE_H_
 
 #include <cassert>
@@ -14,7 +7,7 @@
 
 template <typename T>
 class SegmentTree {
- private:
+private:
   std::vector<T> tree;
   int levels;
   int n;
@@ -26,6 +19,7 @@ class SegmentTree {
       return get(l);
 
     int mid = (st + fi + 1) / 2;
+
     if (r < mid) {
       return query(l, r, st,  mid - 1);
     } else if (l >= mid) {
@@ -37,28 +31,31 @@ class SegmentTree {
     }
   }
 
- public:
+public:
   SegmentTree(const std::vector<T>& data,
-      std::function<T(T, T)> f = std::plus <T>()) {
+              std::function<T(T, T)> f = std::plus <T>()) {
     this->f = f;
     this->n = data.size();
-
     // build tree
     levels = 1, el = 1;
+
     while (el < static_cast<int>(data.size())) {
       el <<= 1;
       ++levels;
     }
+
     tree.assign(2 * el, T());
+
     for (size_t i = 0; i < data.size(); ++i)
       tree[i + el - 1] = data[i];
+
     for (int i = el - 2; i >= 0; --i)
       tree[i] = f(tree[2 * i + 1], tree[2 * i + 2]);
   }
 
   SegmentTree(int n, T val = T(),
-      std::function<T(T, T)> f = std::plus <T>()) :
-        SegmentTree(std::vector<T>(n, val), f) {
+              std::function<T(T, T)> f = std::plus <T>()) :
+    SegmentTree(std::vector<T>(n, val), f) {
   }
 
 
@@ -73,12 +70,13 @@ class SegmentTree {
   void set(int index, T value) {
     int i = el - 1 + index;
     tree[i] = value;
+
     do {
-      i = (i-1) / 2;
-      tree[i] = f(tree[i*2 + 1], tree[i*2 + 2]);
+      i = (i - 1) / 2;
+      tree[i] = f(tree[i * 2 + 1], tree[i * 2 + 2]);
     } while (i > 0);
   }
 };
 
 
-#endif /* SEGTREE_H_ */ // NOLINT
+#endif /* SEGTREE_H_ */
