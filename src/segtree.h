@@ -7,30 +7,6 @@
 
 template <typename T>
 class SegmentTree {
-private:
-  std::vector<T> tree;
-  int levels;
-  int n;
-  int el;
-  std::function<T(T, T)> f;
-
-  T query(int l, int r, int st, int fi) {
-    if (l == r)
-      return get(l);
-
-    int mid = (st + fi + 1) / 2;
-
-    if (r < mid) {
-      return query(l, r, st,  mid - 1);
-    } else if (l >= mid) {
-      return query(l, r, mid, fi);
-    } else {
-      T left  = query(l,   mid - 1, st,  mid - 1);
-      T right = query(mid, r,       mid, fi);
-      return f(left, right);
-    }
-  }
-
 public:
   SegmentTree(const std::vector<T>& data,
               std::function<T(T, T)> f = std::plus <T>()) {
@@ -75,6 +51,30 @@ public:
       i = (i - 1) / 2;
       tree[i] = f(tree[i * 2 + 1], tree[i * 2 + 2]);
     } while (i > 0);
+  }
+
+private:
+  std::vector<T> tree;
+  int levels;
+  int n;
+  int el;
+  std::function<T(T, T)> f;
+
+  T query(int l, int r, int st, int fi) {
+    if (l == r)
+      return get(l);
+
+    int mid = (st + fi + 1) / 2;
+
+    if (r < mid) {
+      return query(l, r, st,  mid - 1);
+    } else if (l >= mid) {
+      return query(l, r, mid, fi);
+    } else {
+      T left  = query(l,   mid - 1, st,  mid - 1);
+      T right = query(mid, r,       mid, fi);
+      return f(left, right);
+    }
   }
 };
 
