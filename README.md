@@ -14,7 +14,6 @@ Here is implemented segment tree class in header file and provided example of us
 
 Notes: 
  * used C++11
- * performed static checker using Google's cpplint.py
 
 [MN]: http://en.wikipedia.org/wiki/Monoid
 [ST]: http://en.wikipedia.org/wiki/Segment_tree
